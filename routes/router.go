@@ -28,4 +28,11 @@ func SetupRouter(r *gin.Engine, userService *user_service.UserService, newslette
 
 		newsletterRoutes.POST("/create", news_letter_handlers.CreateNewsletterHandler(newsletterService))
 	}
+
+	subscriptionRoutes := r.Group("/newsletter")
+	{
+		subscriptionRoutes.Use(auth.UserAuthMiddleware())
+
+		subscriptionRoutes.POST("/subscribe/:newsletterID", news_letter_handlers.SubscribeUserHandler(newsletterService))
+	}
 }

@@ -27,7 +27,7 @@ func main() {
 	}
 	defer dbInstance.Close()
 
-	dbInstance.AutoMigrate(&user_model.User{}, &news_letter_model.Newsletter{})
+	dbInstance.AutoMigrate(&user_model.User{}, &news_letter_model.Newsletter{},&news_letter_model.NewsletterSubscriber{})
 	userRepo := user_repository.UserRepository{DB: dbInstance}
 	userService := user_service.NewUserService(userRepo)
 

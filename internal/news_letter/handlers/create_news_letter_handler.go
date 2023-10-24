@@ -19,21 +19,18 @@ func CreateNewsletterHandler(newsletterService *service.NewsletterService) gin.H
 			return
 		}
 
-		// Retrieve the auth_token cookie
 		token, err := c.Cookie("auth_token")
 		if err != nil {
 			c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
 			return
 		}
 
-		// Parse and validate the token
 		claims, err := auth.ParseToken(token)
 		if err != nil {
 			c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
 			return
 		}
 
-		// Check if the user role is "admin" (or any other authorization checks you need)
 		if claims.Role != "admin" {
 			c.JSON(http.StatusForbidden, gin.H{"error": "Forbidden"})
 			return
