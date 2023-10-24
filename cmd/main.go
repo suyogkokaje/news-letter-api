@@ -5,9 +5,12 @@ import (
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 	"go_newsletter_api/db"
-	"go_newsletter_api/internal/user/model"
-	"go_newsletter_api/internal/user/repository"
-	"go_newsletter_api/internal/user/service"
+	news_letter_repository "go_newsletter_api/internal/news_letter/repository"
+	news_letter_service "go_newsletter_api/internal/news_letter/service"
+	news_letter_model "go_newsletter_api/internal/news_letter/model"
+	user_model "go_newsletter_api/internal/user/model"
+	user_repository "go_newsletter_api/internal/user/repository"
+	user_service "go_newsletter_api/internal/user/service"
 	"go_newsletter_api/routes"
 )
 
@@ -24,12 +27,14 @@ func main() {
 	}
 	defer dbInstance.Close()
 
-	dbInstance.AutoMigrate(&model.User{})
+	dbInstance.AutoMigrate(&user_model.User{}, &news_letter_model.Newsletter{})
+	userRepo := user_repository.UserRepository{DB: dbInstance}
+	userService := user_service.NewUserService(userRepo)
 
-	userRepo := repository.UserRepository{DB: dbInstance}
-	userService := service.NewUserService(userRepo)
+	newsletterRepo := news_letter_repository.NewsletterRepository{DB: dbInstance}
+	newsletterService := news_letter_service.NewNewsletterService(newsletterRepo)
 
-	routes.SetupRouter(r, userService)
+	routes.SetupRouter(r, userService, newsletterService)
 
 	r.Run(":8080")
 }

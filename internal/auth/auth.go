@@ -9,7 +9,6 @@ var (
     jwtSecret = []byte("your-secret-key")
 )
 
-// Claims represents the JWT claims structure.
 type Claims struct {
     UserID   uint   `json:"user_id"`
     Role     string `json:"role"`
@@ -26,4 +25,16 @@ func GenerateToken(userID uint, role string) (string, error) {
     }
     token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
     return token.SignedString(jwtSecret)
+}
+
+func VerifyToken(tokenString string) (*Claims, error) {
+    token, err := jwt.ParseWithClaims(tokenString, &Claims{}, func(token *jwt.Token) (interface{}, error) {
+        return jwtSecret, nil
+    })
+
+    if claims, ok := token.Claims.(*Claims); ok && token.Valid {
+        return claims, nil
+    }
+
+    return nil, err
 }
