@@ -34,5 +34,6 @@ func SetupRouter(r *gin.Engine, userService *user_service.UserService, newslette
 		subscriptionRoutes.Use(auth.UserAuthMiddleware())
 
 		subscriptionRoutes.POST("/subscribe/:newsletterID", news_letter_handlers.SubscribeUserHandler(newsletterService))
+		subscriptionRoutes.POST("/unsubscribe/:newsletterID", news_letter_handlers.UnsubscribeUserHandler(newsletterService))
 	}
 }

@@ -62,9 +62,27 @@ func (nr *NewsletterRepository) SubscribeUser(newsletterID, userID uint) error {
 	return nil
 }
 
-
-
 func (nr *NewsletterRepository) UnsubscribeUser(newsletterID, userID uint) error {
+	var existingNewsletter news_letter_model.Newsletter
+	if err := nr.DB.
+		Where("id = ?", newsletterID).
+		First(&existingNewsletter).Error; err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return errors.New("Newsletter does not exist")
+		}
+		return err
+	}
+
+	var existingSubscription news_letter_model.NewsletterSubscriber
+	if err := nr.DB.
+		Where("newsletter_id = ? AND user_id = ?", newsletterID, userID).
+		First(&existingSubscription).Error; err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return errors.New("User is not subscribed to this newsletter")
+		}
+		return err
+	}
+
 	if err := nr.DB.
 		Where("newsletter_id = ? AND user_id = ?", newsletterID, userID).
 		Delete(news_letter_model.NewsletterSubscriber{}).Error; err != nil {
@@ -73,6 +91,7 @@ func (nr *NewsletterRepository) UnsubscribeUser(newsletterID, userID uint) error
 
 	return nil
 }
+
 
 func (nr *NewsletterRepository) GetSubscribers(newsletterID uint) ([]user_model.User, error) {
 	var subscribers []user_model.User
