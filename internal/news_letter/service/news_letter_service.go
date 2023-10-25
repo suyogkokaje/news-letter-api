@@ -1,7 +1,8 @@
 package service
 
 import (
-	"go_newsletter_api/internal/news_letter/model"
+	news_letter_model "go_newsletter_api/internal/news_letter/model"
+
 	"go_newsletter_api/internal/news_letter/repository"
 )
 
@@ -15,7 +16,7 @@ func NewNewsletterService(repo repository.NewsletterRepository) *NewsletterServi
 	}
 }
 
-func (ns *NewsletterService) CreateNewsletter(newsletter *model.Newsletter, adminID uint) (*model.Newsletter, error) {
+func (ns *NewsletterService) CreateNewsletter(newsletter *news_letter_model.Newsletter, adminID uint) (*news_letter_model.Newsletter, error) {
 	return ns.NewsletterRepository.CreateNewsletter(newsletter, adminID)
 }
 
@@ -25,4 +26,8 @@ func (ns *NewsletterService) SubscribeUser(newsletterID, userID uint) error {
 
 func (ns *NewsletterService) UnsubscribeUser(newsletterID, userID uint) error {
 	return ns.NewsletterRepository.UnsubscribeUser(newsletterID, userID)
+}
+
+func (ns *NewsletterService) GetSubscribers(adminID uint) ([]string, error) {
+	return ns.NewsletterRepository.GetSubscribers(adminID)
 }

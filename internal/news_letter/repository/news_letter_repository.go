@@ -4,7 +4,6 @@ import (
 	"errors"
 	"github.com/jinzhu/gorm"
 	news_letter_model "go_newsletter_api/internal/news_letter/model"
-	user_model "go_newsletter_api/internal/user/model"
 )
 
 type NewsletterRepository struct {
@@ -92,17 +91,29 @@ func (nr *NewsletterRepository) UnsubscribeUser(newsletterID, userID uint) error
 	return nil
 }
 
+func (nr *NewsletterRepository) GetSubscribers(adminID uint) ([]string, error) {
+	var emails []string
 
-func (nr *NewsletterRepository) GetSubscribers(newsletterID uint) ([]user_model.User, error) {
-	var subscribers []user_model.User
-
+	var adminNewsletter news_letter_model.Newsletter
 	if err := nr.DB.
-		Model(&news_letter_model.Newsletter{}).
-		Where("id = ?", newsletterID).
-		Association("Subscribers").
-		Find(&subscribers).Error; err != nil {
+		Where("admin_id = ?", adminID).
+		First(&adminNewsletter).Error; err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return nil, errors.New("Admin does not have a newsletter")
+		}
 		return nil, err
 	}
 
-	return subscribers, nil
+	if err := nr.DB.
+		Table("newsletter_subscribers").
+		Select("users.email").
+		Joins("JOIN users ON users.id = newsletter_subscribers.user_id").
+		Where("newsletter_subscribers.newsletter_id = ?", adminNewsletter.ID).
+		Pluck("email", &emails).
+		Error; err != nil {
+		return nil, err
+	}
+
+	return emails, nil
 }
+
