@@ -12,6 +12,9 @@ import (
 	user_repository "go_newsletter_api/internal/user/repository"
 	user_service "go_newsletter_api/internal/user/service"
 	"go_newsletter_api/routes"
+	edition_repository "go_newsletter_api/internal/edition/repository"
+	edition_service "go_newsletter_api/internal/edition/service"
+	edition_model "go_newsletter_api/internal/edition/model"
 )
 
 func main() {
@@ -30,13 +33,18 @@ func main() {
 	dbInstance.AutoMigrate(&user_model.User{})
 	dbInstance.AutoMigrate(&news_letter_model.Newsletter{})
 	dbInstance.AutoMigrate(&news_letter_model.NewsletterSubscriber{})
+	dbInstance.AutoMigrate(&edition_model.Edition{}) 
+
 	userRepo := user_repository.UserRepository{DB: dbInstance}
 	userService := user_service.NewUserService(userRepo)
 
 	newsletterRepo := news_letter_repository.NewsletterRepository{DB: dbInstance}
 	newsletterService := news_letter_service.NewNewsletterService(newsletterRepo)
 
-	routes.SetupRouter(r, userService, newsletterService)
+	editionRepo := edition_repository.EditionRepository{DB: dbInstance}
+	editionService := edition_service.NewEditionService(editionRepo)
+
+	routes.SetupRouter(r, userService, newsletterService, editionService) 
 
 	r.Run(":8080")
 }
