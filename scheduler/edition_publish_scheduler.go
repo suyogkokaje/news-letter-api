@@ -10,7 +10,8 @@ import (
 
 func StartEditionPublishScheduler(editionService edition_service.EditionService,newsletterService news_letter_service.NewsletterService) {
 	c := cron.New()
-	_ = c.AddFunc("0 0 12 * * *", func() {
+	_ = c.AddFunc("0 12 11 * * *", func() {
+		log.Printf("Running The CRON JOB!!")
 		newsletters, err := newsletterService.FetchAllNewsletters()
 		if err != nil {
 			log.Printf("Error fetching newsletters: %v", err)

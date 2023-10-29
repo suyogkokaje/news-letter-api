@@ -1,8 +1,11 @@
 package repository
 
 import (
-	"github.com/jinzhu/gorm"
+	"errors"
 	edition_model "go_newsletter_api/internal/edition/model"
+	newsletter_model "go_newsletter_api/internal/news_letter/model"
+
+	"github.com/jinzhu/gorm"
 )
 
 type EditionRepository struct {
@@ -14,6 +17,13 @@ func NewEditionRepository(db *gorm.DB) *EditionRepository {
 }
 
 func (er *EditionRepository) CreateEdition(edition *edition_model.Edition) error {
+	var newsletter newsletter_model.Newsletter
+	if err := er.DB.Where("id = ?", edition.NewsletterID).First(&newsletter).Error; err != nil {
+		if gorm.IsRecordNotFoundError(err) {
+			return errors.New("Newsletter does not exist")
+		}
+		return err
+	}
 	return er.DB.Create(edition).Error
 }
 
