@@ -4,6 +4,7 @@ import (
 	"time"
 )
 
+
 type Edition struct {
 	ID            uint      `json:"id"`
 	EditionNumber int       `json:"edition_number"`

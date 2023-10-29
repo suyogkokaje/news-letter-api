@@ -11,7 +11,7 @@ import (
 
 func StartEditionPublishScheduler(editionService edition_service.EditionService, newsletterService news_letter_service.NewsletterService) {
     c := cron.New()
-    _ = c.AddFunc("45 8 12 * * *", func() {
+    _ = c.AddFunc("30 16 14 * * *", func() {
         log.Printf("Running The CRON JOB!!")
         newsletters, err := newsletterService.FetchAllNewsletters()
         if err != nil {

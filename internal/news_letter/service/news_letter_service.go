@@ -35,3 +35,7 @@ func (ns *NewsletterService) GetSubscribers(adminID uint) ([]string, error) {
 func (ns *NewsletterService) FetchAllNewsletters() ([]news_letter_model.Newsletter, error) {
 	return ns.NewsletterRepository.FetchAllNewsletters()
 }
+
+func (ns *NewsletterService) DeleteNewsletter(newsletterID uint) error {
+    return ns.NewsletterRepository.DeleteNewsletter(newsletterID)
+}

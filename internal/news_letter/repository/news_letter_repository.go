@@ -2,7 +2,8 @@ package repository
 
 import (
 	"errors"
-	"github.com/jinzhu/gorm"
+	"gorm.io/gorm"
+
 	news_letter_model "go_newsletter_api/internal/news_letter/model"
 )
 
@@ -124,4 +125,20 @@ func (nr *NewsletterRepository) FetchAllNewsletters() ([]news_letter_model.Newsl
 		return nil, err
 	}
 	return newsletters, nil
+}
+
+func (nr *NewsletterRepository) DeleteNewsletter(newsletterID uint) error {
+    var newsletter news_letter_model.Newsletter
+    if err := nr.DB.Where("id = ?", newsletterID).First(&newsletter).Error; err != nil {
+        if err == gorm.ErrRecordNotFound {
+            return errors.New("Newsletter not found")
+        }
+        return err
+    }
+
+    if err := nr.DB.Delete(&newsletter).Error; err != nil {
+        return err
+    }
+
+    return nil
 }

@@ -1,16 +1,14 @@
 package db
 
 import (
-    "github.com/jinzhu/gorm"
-    _ "github.com/jinzhu/gorm/dialects/postgres"
+    "gorm.io/driver/postgres"
+    "gorm.io/gorm"
 )
 
-var (
-    DB  *gorm.DB
-)
+var DB *gorm.DB
 
 func Initialize(connection string) {
-    db, err := gorm.Open("postgres", connection)
+    db, err := gorm.Open(postgres.Open(connection), &gorm.Config{})
     if err != nil {
         panic("Failed to connect to the database: " + err.Error())
     }

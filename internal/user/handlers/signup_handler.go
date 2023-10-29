@@ -4,7 +4,7 @@ import (
     "github.com/gin-gonic/gin"
     "go_newsletter_api/internal/user/model"
     "go_newsletter_api/internal/user/service"
-    "github.com/jinzhu/gorm"
+    "gorm.io/gorm"
 )
 
 func SignUpHandler(c *gin.Context, userService *service.UserService) {

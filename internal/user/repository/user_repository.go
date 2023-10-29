@@ -1,9 +1,9 @@
 package repository
 
 import (
-	"github.com/jinzhu/gorm"
 	news_letter_model "go_newsletter_api/internal/news_letter/model"
 	user_model "go_newsletter_api/internal/user/model"
+	"gorm.io/gorm"
 )
 
 type UserRepository struct {

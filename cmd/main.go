@@ -12,11 +12,11 @@ import (
 	user_repository "go_newsletter_api/internal/user/repository"
 	user_service "go_newsletter_api/internal/user/service"
 	"go_newsletter_api/routes"
-	"go_newsletter_api/scheduler/mailer"
+	scheduler "go_newsletter_api/scheduler/mailer"
 
 	"github.com/gin-gonic/gin"
-	"github.com/jinzhu/gorm"
-	_ "github.com/jinzhu/gorm/dialects/postgres"
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
 )
 
 func main() {
@@ -26,16 +26,15 @@ func main() {
 
 	r := gin.Default()
 
-	dbInstance, err := gorm.Open("postgres", connectionStr)
+	dbInstance, err := gorm.Open(postgres.Open(connectionStr), &gorm.Config{})
 	if err != nil {
 		panic("Failed to connect to the database")
 	}
-	defer dbInstance.Close()
 
 	dbInstance.AutoMigrate(&user_model.User{})
 	dbInstance.AutoMigrate(&news_letter_model.Newsletter{})
 	dbInstance.AutoMigrate(&news_letter_model.NewsletterSubscriber{})
-	dbInstance.AutoMigrate(&edition_model.Edition{}) 
+	dbInstance.AutoMigrate(&edition_model.Edition{})
 
 	userRepo := user_repository.UserRepository{DB: dbInstance}
 	userService := user_service.NewUserService(userRepo)
@@ -48,7 +47,7 @@ func main() {
 
 	scheduler.StartEditionPublishScheduler(*editionService, *newsletterService)
 
-	routes.SetupRouter(r, userService, newsletterService, editionService) 
+	routes.SetupRouter(r, userService, newsletterService, editionService)
 
 	r.Run(":8080")
 }
