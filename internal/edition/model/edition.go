@@ -12,4 +12,6 @@ type Edition struct {
 	CreatedAt     time.Time `json:"created_at"`
 	UpdatedAt     time.Time `json:"updated_at"`
 	PublishAt     time.Time `json:"publish_at"`
+	IsPublished   bool      `json:"is_published"`
+	IsCompleted   bool      `json:"is_completed"`
 }

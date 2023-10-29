@@ -1,20 +1,22 @@
 package main
 
 import (
-	"github.com/gin-gonic/gin"
-	"github.com/jinzhu/gorm"
-	_ "github.com/jinzhu/gorm/dialects/postgres"
 	"go_newsletter_api/db"
+	edition_model "go_newsletter_api/internal/edition/model"
+	edition_repository "go_newsletter_api/internal/edition/repository"
+	edition_service "go_newsletter_api/internal/edition/service"
+	news_letter_model "go_newsletter_api/internal/news_letter/model"
 	news_letter_repository "go_newsletter_api/internal/news_letter/repository"
 	news_letter_service "go_newsletter_api/internal/news_letter/service"
-	news_letter_model "go_newsletter_api/internal/news_letter/model"
 	user_model "go_newsletter_api/internal/user/model"
 	user_repository "go_newsletter_api/internal/user/repository"
 	user_service "go_newsletter_api/internal/user/service"
 	"go_newsletter_api/routes"
-	edition_repository "go_newsletter_api/internal/edition/repository"
-	edition_service "go_newsletter_api/internal/edition/service"
-	edition_model "go_newsletter_api/internal/edition/model"
+	"go_newsletter_api/scheduler"
+
+	"github.com/gin-gonic/gin"
+	"github.com/jinzhu/gorm"
+	_ "github.com/jinzhu/gorm/dialects/postgres"
 )
 
 func main() {
@@ -43,6 +45,8 @@ func main() {
 
 	editionRepo := edition_repository.EditionRepository{DB: dbInstance}
 	editionService := edition_service.NewEditionService(editionRepo)
+
+	scheduler.StartEditionPublishScheduler(*editionService, *newsletterService)
 
 	routes.SetupRouter(r, userService, newsletterService, editionService) 
 

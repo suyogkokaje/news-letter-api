@@ -117,3 +117,11 @@ func (nr *NewsletterRepository) GetSubscribers(adminID uint) ([]string, error) {
 	return emails, nil
 }
 
+func (nr *NewsletterRepository) FetchAllNewsletters() ([]news_letter_model.Newsletter, error) {
+	var newsletters []news_letter_model.Newsletter
+	err := nr.DB.Find(&newsletters).Error
+	if err != nil {
+		return nil, err
+	}
+	return newsletters, nil
+}
