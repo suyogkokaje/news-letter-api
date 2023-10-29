@@ -12,7 +12,7 @@ import (
 	user_repository "go_newsletter_api/internal/user/repository"
 	user_service "go_newsletter_api/internal/user/service"
 	"go_newsletter_api/routes"
-	"go_newsletter_api/scheduler"
+	"go_newsletter_api/scheduler/mailer"
 
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
