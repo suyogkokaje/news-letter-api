@@ -68,7 +68,7 @@ func GetEditionByIDHandler(h *EditionHandler) gin.HandlerFunc {
 
 func GetEditionsByNewsletterIDHandler(h *EditionHandler) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		newsletterID := parseID(c)
+		newsletterID := parsenewsletterID(c)
 		editions, err := h.service.GetEditionsByNewsletterID(newsletterID)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to retrieve editions", "details": err.Error()})
@@ -94,6 +94,14 @@ func DeleteEditionHandler(h *EditionHandler) gin.HandlerFunc {
 
 func parseID(c *gin.Context) uint {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 64)
+	if err != nil {
+		return 0
+	}
+	return uint(id)
+}
+
+func parsenewsletterID(c *gin.Context) uint {
+	id, err := strconv.ParseUint(c.Param("newsletterID"), 10, 64)
 	if err != nil {
 		return 0
 	}

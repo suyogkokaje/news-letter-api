@@ -142,21 +142,3 @@ func (nr *NewsletterRepository) DeleteNewsletter(newsletterID uint) error {
 
     return nil
 }
-
-func (nr *NewsletterRepository) GetSubscribedNewsletters(userID uint) ([]news_letter_model.Newsletter, error) {
-	var newsletters []news_letter_model.Newsletter
-
-	err := nr.DB.
-		Table("newsletters").
-		Select("newsletters.*").
-		Joins("JOIN newsletter_subscribers ON newsletters.id = newsletter_subscribers.newsletter_id").
-		Where("newsletter_subscribers.user_id = ?", userID).
-		Find(&newsletters).
-		Error
-
-	if err != nil {
-		return nil, err
-	}
-
-	return newsletters, nil
-}

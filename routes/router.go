@@ -40,18 +40,15 @@ func SetupRouter(r *gin.Engine, userService *user_service.UserService, newslette
 		subscriptionRoutes.POST("/subscribe/:newsletterID", news_letter_handlers.SubscribeUserHandler(newsletterService))
 		subscriptionRoutes.POST("/unsubscribe/:newsletterID", news_letter_handlers.UnsubscribeUserHandler(newsletterService))
 		subscriptionRoutes.GET("/subscriptions", user_handlers.GetUserSubscriptionsHandler(userService))
-		subscriptionRoutes.GET("/subscribed-newsletters", news_letter_handlers.GetSubscribedNewslettersHandler(newsletterService))
 	}
 
 	editionRoutes := r.Group("/edition")
 	{
-		editionRoutes.Use(auth.AdminAuthMiddleware())
-
 		editionHandler := edition_handlers.NewEditionHandler(*editionService)
-		editionRoutes.POST("/create", edition_handlers.CreateEditionHandler(editionHandler))
-		editionRoutes.PUT("/update/:id", edition_handlers.UpdateEditionHandler(editionHandler))
+		editionRoutes.POST("/create", auth.AdminAuthMiddleware(), edition_handlers.CreateEditionHandler(editionHandler))
+		editionRoutes.PUT("/update/:id", auth.AdminAuthMiddleware(), edition_handlers.UpdateEditionHandler(editionHandler))
 		editionRoutes.GET("/get/:id", edition_handlers.GetEditionByIDHandler(editionHandler))
 		editionRoutes.GET("/get-by-newsletter/:newsletterID", edition_handlers.GetEditionsByNewsletterIDHandler(editionHandler))
-		editionRoutes.DELETE("/delete/:id", edition_handlers.DeleteEditionHandler(editionHandler))
+		editionRoutes.DELETE("/delete/:id", auth.AdminAuthMiddleware(), edition_handlers.DeleteEditionHandler(editionHandler))
 	}
 }
