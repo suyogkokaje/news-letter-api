@@ -40,7 +40,7 @@ func SetupRouter(r *gin.Engine, userService *user_service.UserService, newslette
 		subscriptionRoutes.POST("/subscribe/:newsletterID", news_letter_handlers.SubscribeUserHandler(newsletterService))
 		subscriptionRoutes.POST("/unsubscribe/:newsletterID", news_letter_handlers.UnsubscribeUserHandler(newsletterService))
 		subscriptionRoutes.GET("/subscriptions", user_handlers.GetUserSubscriptionsHandler(userService))
-
+		subscriptionRoutes.GET("/subscribed-newsletters", news_letter_handlers.GetSubscribedNewslettersHandler(newsletterService))
 	}
 
 	editionRoutes := r.Group("/edition")
