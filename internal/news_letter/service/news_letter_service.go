@@ -40,3 +40,6 @@ func (ns *NewsletterService) DeleteNewsletter(newsletterID uint) error {
     return ns.NewsletterRepository.DeleteNewsletter(newsletterID)
 }
 
+func (ns *NewsletterService) UpdateNewsletter(newsletter *news_letter_model.Newsletter) error {
+	return ns.NewsletterRepository.UpdateNewsletter(newsletter)
+}

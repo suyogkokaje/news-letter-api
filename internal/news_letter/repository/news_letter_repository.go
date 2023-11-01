@@ -142,3 +142,22 @@ func (nr *NewsletterRepository) DeleteNewsletter(newsletterID uint) error {
 
     return nil
 }
+
+func (nr *NewsletterRepository) UpdateNewsletter(newsletter *news_letter_model.Newsletter) error {
+	var existingNewsletter news_letter_model.Newsletter
+	if err := nr.DB.
+		Where("id = ?", newsletter.ID).
+		First(&existingNewsletter).Error; err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return errors.New("Newsletter not found")
+		}
+		return err
+	}
+
+	if err := nr.DB.Save(newsletter).Error; err != nil {
+		return err
+	}
+
+	return nil
+}
+
