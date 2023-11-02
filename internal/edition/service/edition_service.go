@@ -27,8 +27,8 @@ func (es *EditionService) GetEditionByID(id uint) (*model.Edition, error) {
 	return es.EditionRepository.GetEditionByID(id)
 }
 
-func (es *EditionService) GetEditionsByNewsletterID(newsletterID uint) ([]model.Edition, error) {
-	return es.EditionRepository.GetEditionsByNewsletterID(newsletterID)
+func (es *EditionService) GetEditionsByNewsletterID(newsletterID uint, page, pageSize int) ([]model.Edition, int, error) {
+	return es.EditionRepository.GetEditionsByNewsletterID(newsletterID, page, pageSize)
 }
 
 func (es *EditionService) DeleteEdition(id uint) error {

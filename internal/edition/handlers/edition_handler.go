@@ -69,13 +69,14 @@ func GetEditionByIDHandler(h *EditionHandler) gin.HandlerFunc {
 func GetEditionsByNewsletterIDHandler(h *EditionHandler) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		newsletterID := parsenewsletterID(c)
-		editions, err := h.service.GetEditionsByNewsletterID(newsletterID)
+		page, pageSize := parsePaginationParams(c)
+		editions, count, err := h.service.GetEditionsByNewsletterID(newsletterID, page, pageSize)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to retrieve editions", "details": err.Error()})
 			return
 		}
 
-		c.JSON(http.StatusOK, editions)
+		c.JSON(http.StatusOK, gin.H{"editions": editions, "count": count})
 	}
 }
 
@@ -88,7 +89,6 @@ func DeleteEditionHandler(h *EditionHandler) gin.HandlerFunc {
 		}
 
 		c.JSON(http.StatusNoContent, gin.H{"message": "Edition deleted successfully"})
-
 	}
 }
 
@@ -106,4 +106,21 @@ func parsenewsletterID(c *gin.Context) uint {
 		return 0
 	}
 	return uint(id)
+}
+
+func parsePaginationParams(c *gin.Context) (page, pageSize int) {
+	pageStr := c.DefaultQuery("page", "1")
+	page, _ = strconv.Atoi(pageStr)
+
+	pageSizeStr := c.DefaultQuery("page_size", "10")
+	pageSize, _ = strconv.Atoi(pageSizeStr)
+
+	if page < 1 {
+		page = 1
+	}
+	if pageSize < 1 {
+		pageSize = 10
+	}
+
+	return page, pageSize
 }

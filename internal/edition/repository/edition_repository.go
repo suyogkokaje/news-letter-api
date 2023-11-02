@@ -43,13 +43,15 @@ func (er *EditionRepository) GetEditionByID(id uint) (*edition_model.Edition, er
     return &edition, nil
 }
 
-func (er *EditionRepository) GetEditionsByNewsletterID(newsletterID uint) ([]edition_model.Edition, error) {
+func (er *EditionRepository) GetEditionsByNewsletterID(newsletterID uint, page, pageSize int) ([]edition_model.Edition, int, error) {
     var editions []edition_model.Edition
-    err := er.DB.Where("newsletter_id = ?", newsletterID).Find(&editions).Error
-    if err != nil {
-        return nil, err
-    }
-    return editions, nil
+    var count int64
+
+    query := er.DB.Where("newsletter_id = ?", newsletterID)
+    query.Offset((page - 1) * pageSize).Limit(pageSize).Find(&editions)
+    query.Model(&editions).Count(&count)
+
+    return editions, int(count), nil
 }
 
 func (er *EditionRepository) DeleteEdition(id uint) error {

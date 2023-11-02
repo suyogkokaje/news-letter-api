@@ -29,7 +29,6 @@ func SetupRouter(r *gin.Engine, userService *user_service.UserService, newslette
 		newsletterRoutes.Use(auth.AdminAuthMiddleware())
 
 		newsletterRoutes.POST("/create", news_letter_handlers.CreateNewsletterHandler(newsletterService))
-		newsletterRoutes.GET("/subscribers", news_letter_handlers.GetSubscribersHandler(newsletterService))
 		newsletterRoutes.DELETE("/delete/:id", news_letter_handlers.DeleteNewsletterHandler(newsletterService))
 		newsletterRoutes.PUT("/update/:id", news_letter_handlers.UpdateNewsletterHandler(newsletterService)) 
 
